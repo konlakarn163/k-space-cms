@@ -85,7 +85,7 @@ export default function TagManager({ session }: { session: Session }) {
   };
 
   return (
-    <div className="mx-auto max-w-7xl py-8 px-4">
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="pb-4">
         <h1 className="font-serif text-4xl font-black tracking-tight text-[var(--foreground)]">
           Tag Management

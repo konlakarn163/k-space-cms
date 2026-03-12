@@ -28,7 +28,7 @@ export default function PostGrid({ loading, posts }: PostGridProps) {
 
   if (posts.length === 0) {
     return (
-      <section className="theme-card rounded-4xl border p-10 text-center">
+      <section className=" p-10 text-center">
         <p className="theme-muted text-xs uppercase tracking-[0.24em]">No results</p>
         <h3 className="font-serif mt-3 text-3xl font-bold">No posts found for this view.</h3>
         <p className="theme-muted mt-3 text-sm">Try another search term or pick a different tag.</p>

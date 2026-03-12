@@ -1,4 +1,4 @@
-import { createSupabaseRlsClient } from '../config/supabase.js';
+import { createSupabaseRlsClient, supabaseAdmin } from '../config/supabase.js';
 
 export const syncProfileForUser = async ({ accessToken, user }) => {
   const supabase = createSupabaseRlsClient(accessToken);
@@ -47,4 +47,29 @@ export const getMyProfile = async ({ accessToken, userId }) => {
   }
 
   return data;
+};
+
+export const updateProfile = async ({ accessToken, userId, username, avatarUrl }) => {
+  const supabase = createSupabaseRlsClient(accessToken);
+  const updateData = {};
+  if (username !== undefined) updateData.username = username;
+  if (avatarUrl !== undefined) updateData.avatar_url = avatarUrl;
+  updateData.updated_at = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updateData)
+    .eq('id', userId)
+    .select('*')
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
+export const changePassword = async ({ userId, newPassword }) => {
+  const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+    password: newPassword,
+  });
+  if (error) throw new Error(error.message);
 };

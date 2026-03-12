@@ -46,7 +46,7 @@ export default function AppNavbar() {
               <Blend className="h-4 w-4" />
             </div>
             <span className="navbar-brand-text hidden font-serif font-black tracking-tighter sm:block">
-              K SPACE
+              K-SPACE CMS
             </span>
           </Link>
 

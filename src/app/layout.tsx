@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
+import ScrollToTopProvider from "@/components/providers/ScrollToTopProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <AuthProvider>
+            <ScrollToTopProvider />
             {children}
           </AuthProvider>
         </ThemeProvider>

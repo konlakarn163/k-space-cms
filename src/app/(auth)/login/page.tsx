@@ -6,6 +6,7 @@ import OriginButton from "@/components/ui/OriginButton";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildApiUrl } from "@/lib/api";
+import { encryptPassword } from "@/lib/cryptoUtils";
 import Image from "next/image";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
@@ -48,7 +49,7 @@ export default function LoginPage() {
 
         const { error } = await supabase.auth.signUp({
           email,
-          password,
+          password: encryptPassword(password),
           options: {
             emailRedirectTo: `${window.location.origin}/auth/callback`,
           },
@@ -59,7 +60,7 @@ export default function LoginPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
-          password,
+          password: encryptPassword(password),
         });
 
         if (error) throw error;

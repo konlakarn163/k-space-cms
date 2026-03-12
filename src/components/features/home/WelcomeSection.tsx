@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 type WelcomeSectionProps = {
   loading?: boolean;
@@ -9,81 +9,99 @@ type WelcomeSectionProps = {
 };
 
 const TAG_ICONS: Record<string, string> = {
-  ai: '✦',
-  business: '💼',
-  crypto: '◎',
-  digital: '❖',
-  news: '✺',
-  startups: '🚀',
-  technology: '⊞',
-  trends: '🔥',
-  nextjs: '▲',
-  supabase: '⚡',
-  backend: '⚙',
-  design: '◈',
+  ai: "✦",
+  business: "💼",
+  crypto: "◎",
+  digital: "❖",
+  news: "✺",
+  startups: "🚀",
+  technology: "⊞",
+  trends: "🔥",
+  nextjs: "▲",
+  supabase: "⚡",
+  backend: "⚙",
+  design: "◈",
 };
 
 function getIcon(tag: string) {
-  return TAG_ICONS[tag.toLowerCase()] ?? '·';
+  return TAG_ICONS[tag.toLowerCase()] ?? "·";
 }
 
 export default function WelcomeSection({
-  loading = false,
   tags,
   loadingTags = false,
   selectedTag,
   onSelectTag,
 }: WelcomeSectionProps) {
   return (
-    <section className="flex flex-col items-center text-center gap-6 pb-2">
-      {/* Hero text */}
-      {loading ? (
-        <div className="w-full max-w-3xl space-y-4 animate-pulse">
-          <div className="mx-auto h-12 w-3/4 rounded-xl theme-elevated" />
-          <div className="mx-auto h-12 w-1/2 rounded-xl theme-elevated" />
-          <div className="mx-auto mt-4 h-4 w-2/3 rounded theme-elevated" />
-          <div className="mx-auto h-4 w-1/2 rounded theme-elevated" />
-        </div>
-      ) : (
-        <div className="max-w-3xl">
-          <h1 className="font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-            <span className="text-[var(--danger)]">K-Space CMS:</span>{' '}
+    <section className="relative flex flex-col items-center px-4 py-12 text-center md:py-20">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 left-1/2 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-emerald-500/5 blur-[100px] dark:bg-emerald-500/10" />
+      </div>
+
+      <div className="max-w-4xl">
+        <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-6xl lg:text-7xl dark:text-white">
+          <span className="bg-gradient-to-r from-[#ef5a3c] via-orange-500 to-[#ef5a3c] bg-clip-text text-transparent">
+            K-Space CMS:
+          </span>
+          <br />
+          <span className="leading-[1.1]">
             Community for Builders, Thinkers and Creators.
-          </h1>
-          <p className="theme-muted mx-auto mt-5 max-w-xl text-sm leading-7 sm:text-base">
-            A community-driven CMS on Next.js, Supabase and Express.
-            Share engineering notes, product updates and collaborative stories.
-          </p>
-        </div>
-      )}
+          </span>
+        </h1>
+        <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-slate-500 md:text-lg dark:text-slate-400">
+          A community-driven CMS on{" "}
+          <span className="text-slate-900 dark:text-slate-200 font-medium">
+            Next.js, Supabase and Express.
+          </span>
+          <br className="hidden md:block" /> Share engineering notes, product
+          updates and collaborative stories.
+        </p>
+      </div>
 
-      {/* Divider */}
-      <div className="w-full max-w-4xl border-t border-[var(--border-default)]" />
+      <div className="my-12 h-px w-full max-w-4xl bg-linear-to-r from-transparent via-slate-200 to-transparent dark:via-slate-800" />
 
-      {/* Tag chips */}
       {loadingTags ? (
-        <div className="flex flex-wrap justify-center gap-2 animate-pulse">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-8 w-20 rounded-full theme-elevated" />
+        <div className="flex flex-wrap justify-center gap-3 animate-pulse">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-10 w-24 rounded-full bg-slate-200 dark:bg-slate-800"
+            />
           ))}
         </div>
       ) : (
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-3">
           <button
             type="button"
-            onClick={() => onSelectTag('')}
-            className={`tag-chip ${selectedTag === '' ? 'ring-1 ring-[var(--accent)] opacity-100' : 'opacity-60 hover:opacity-90'}`}
+            onClick={() => onSelectTag("")}
+            className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+              selectedTag === ""
+                ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
+                : "bg-white text-slate-500 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-600"
+            }`}
           >
-            · All
+            <span>·</span> All
           </button>
           {tags.map((tag) => (
             <button
               key={tag}
               type="button"
-              onClick={() => onSelectTag(selectedTag === tag ? '' : tag)}
-              className={`tag-chip ${selectedTag === tag ? 'ring-1 ring-[var(--accent)] opacity-100' : 'opacity-60 hover:opacity-90'}`}
+              onClick={() => onSelectTag(selectedTag === tag ? "" : tag)}
+              className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                selectedTag === tag
+                  ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
+                  : "bg-white text-slate-500 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-600"
+              }`}
             >
-              {getIcon(tag)} {tag.toUpperCase()}
+              <span
+                className={
+                  selectedTag === tag ? "text-inherit" : "text-emerald-500"
+                }
+              >
+                {getIcon(tag)}
+              </span>
+              {tag.toUpperCase()}
             </button>
           ))}
         </div>

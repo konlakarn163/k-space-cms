@@ -386,3 +386,37 @@ button {
   transition: all 200ms ease;
   cursor: pointer;
 }
+
+.theme-prose a,
+.ProseMirror a {
+  color: rgb(37 99 235);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.theme-prose ul,
+.ProseMirror ul {
+  list-style: disc;
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.theme-prose ol,
+.ProseMirror ol {
+  list-style: decimal;
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.theme-prose li,
+.ProseMirror li {
+  margin: 0.25rem 0;
+}
+
+.ProseMirror {
+  min-height: 13rem;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
