@@ -1,10 +1,17 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/providers/ThemeProvider';
 
 export default function ThemeToggle({ className = '' }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isDark = theme === 'dark';
 
   return (
@@ -15,8 +22,8 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
       aria-label="Toggle theme"
       title="Toggle theme"
     >
-      {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      <span>{isDark ? 'Dark' : 'Light'}</span>
+      {!mounted ? <Moon className="h-4 w-4" /> : isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      <span>{!mounted ? 'Theme' : isDark ? 'Dark' : 'Light'}</span>
     </button>
   );
 }

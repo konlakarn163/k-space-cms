@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -8,7 +9,6 @@ import {
   Blend,
   Tag,
   Users,
-  LayoutDashboard,
   LogOut,
   User,
 } from "lucide-react";
@@ -24,9 +24,14 @@ import {
 
 export default function AppNavbar() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const user = useAuthStore((state) => state.user);
   const role = useAuthStore((state) => state.role);
   const isSuperAdmin = role === "super_admin";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -51,7 +56,7 @@ export default function AppNavbar() {
           </Link>
 
           <div className="navbar-actions flex items-center gap-3">
-            {user ? (
+            {mounted && user ? (
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => router.push("/write")}
