@@ -18,6 +18,15 @@ import { deletePost } from '@/services/postService';
 import { castVote } from '@/services/voteService';
 import { formatDate, getCommentCount, getVoteScore } from '@/lib/postUtils';
 import { supabase } from '@/utils/supabase/client';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 type PostDetailContentProps = {
   initialPost: Post;
@@ -31,6 +40,7 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
   const [comments, setComments] = useState<Comment[]>([]);
   const [loadingComments, setLoadingComments] = useState(true);
   const [commentInput, setCommentInput] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const myId = user?.id;
 
   useEffect(() => {
@@ -87,11 +97,10 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
 
   const handleDeletePost = async () => {
     if (!session) return;
-    const confirmed = window.confirm('Delete this article?');
-    if (!confirmed) return;
 
     try {
       await deletePost({ session, postId: post.id });
+      setDeleteDialogOpen(false);
       router.push('/');
       router.refresh();
     } catch {
@@ -173,9 +182,37 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
               <Link href={`/write/${post.id}`} className="theme-secondary-button inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
                 <Pencil className="h-4 w-4" /> Edit
               </Link>
-              <button type="button" onClick={handleDeletePost} className="theme-secondary-button theme-danger inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
-                <Trash2 className="h-4 w-4" /> Delete
-              </button>
+              <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <DialogTrigger asChild>
+                  <button type="button" className="theme-secondary-button theme-danger inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm">
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Delete this article?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. The post and related data will be permanently removed.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteDialogOpen(false)}
+                      className="theme-secondary-button inline-flex items-center rounded-full px-4 py-2 text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleDeletePost()}
+                      className="theme-secondary-button theme-danger inline-flex items-center rounded-2xl px-4 py-2 text-sm text-red-600 hover:bg-red-500/20"
+                    >
+                      Delete
+                    </button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           ) : null}
         </div>
