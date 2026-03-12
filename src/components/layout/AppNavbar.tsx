@@ -63,7 +63,7 @@ export default function AppNavbar() {
 
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button className="relative h-9 w-9 overflow-hidden rounded-full border-2 border-white/20 transition-all hover:border-white/50 focus:outline-none">
+                    <button className="relative h-11 w-11 overflow-hidden rounded-full border-2 border-white/20 transition-all hover:border-white/50 focus:outline-none">
                       <Image
                         src={getAvatarUrl(user)}
                         alt="avatar"
