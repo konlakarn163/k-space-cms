@@ -1,106 +1,124 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { Session, User } from '@supabase/supabase-js';
+import type { Post } from '@/lib/types';
+import PostGrid from '@/components/features/home/PostGrid';
+import WelcomeSection from '@/components/features/home/WelcomeSection';
+import { fetchPosts } from '@/services/postService';
+import { fetchTags, type MasterTag } from '@/services/tagService';
+import { supabase } from '@/utils/supabase/client';
 
-export default function HomeContent({ user }: { user: any }) {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 }
-    }
-  };
+type HomeContentProps = {
+  user: User | null;
+};
 
-  const item = {
-    hidden: { opacity: 0, y: 30 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: "spring", stiffness: 100, damping: 15 } 
+export default function HomeContent({ user: _user }: HomeContentProps) {
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  const [session, setSession] = useState<Session | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [masterTags, setMasterTags] = useState<MasterTag[]>([]);
+  const [selectedTag, setSelectedTag] = useState('');
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingTags, setLoadingTags] = useState(true);
+
+  useEffect(() => {
+    const initSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+
+    void initSession();
+
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+    });
+
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  const loadPosts = useCallback(
+    async (mode: 'reset' | 'append') => {
+      mode === 'reset' ? setLoadingPosts(true) : setLoadingMore(true);
+
+      try {
+        const response = await fetchPosts({
+          session,
+          limit: 9,
+          cursor: mode === 'append' ? nextCursor : null,
+          tag: selectedTag,
+        });
+
+        setPosts((prev) => (mode === 'append' ? [...prev, ...response.posts] : response.posts));
+        setNextCursor(response.nextCursor);
+        setHasMore(response.hasMore);
+      } finally {
+        setLoadingPosts(false);
+        setLoadingMore(false);
+      }
+    },
+    [nextCursor, selectedTag, session],
+  );
+
+  const loadTags = useCallback(async () => {
+    setLoadingTags(true);
+    try {
+      const result = await fetchTags({ session });
+      setMasterTags(result);
+    } finally {
+      setLoadingTags(false);
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    void loadPosts('reset');
+  }, [loadPosts, selectedTag, session?.access_token]);
+
+  useEffect(() => {
+    void loadTags();
+  }, [loadTags]);
+
+  useEffect(() => {
+    const target = sentinelRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !loadingPosts && !loadingMore) {
+          void loadPosts('append');
+        }
+      },
+      { threshold: 0.8 },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, loadPosts, loadingMore, loadingPosts]);
 
   return (
-    <motion.main 
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="min-h-screen p-8 bg-white dark:bg-slate-950 text-slate-900 dark:text-white flex flex-col items-center justify-center transition-colors duration-500"
-    >
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/10 dark:bg-blue-600/5 blur-[120px] rounded-full" />
-        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-emerald-500/10 dark:bg-emerald-600/5 blur-[120px] rounded-full" />
-      </div>
+    <div className="theme-canvas min-h-screen">
+      <main className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+        <WelcomeSection
+          loading={loadingPosts && posts.length === 0}
+          tags={masterTags.map((t) => t.name)}
+          loadingTags={loadingTags}
+          selectedTag={selectedTag}
+          onSelectTag={setSelectedTag}
+        />
 
-      <motion.h1 
-        variants={item}
-        className="relative text-5xl font-black tracking-tight mb-10 text-center"
-      >
-        <span className="bg-gradient-to-r from-blue-600 to-emerald-600 dark:from-blue-400 dark:to-emerald-400 bg-clip-text text-transparent">
-          Konlakarn Community
-        </span>
-      </motion.h1>
+        <PostGrid loading={loadingPosts} posts={posts} />
 
-      {user ? (
-        <motion.div 
-          variants={item}
-          whileHover={{ y: -5 }}
-          className="relative z-10 p-8 w-full max-w-md bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col items-center gap-6"
-        >
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.4 }}
-            className="relative"
-          >
-            <div className="absolute inset-0 bg-emerald-500 blur-lg opacity-20 dark:opacity-40 rounded-full" />
-            <img 
-              src={user.user_metadata.avatar_url} 
-              className="relative w-24 h-24 rounded-full border-4 border-white dark:border-slate-800 shadow-xl" 
-              alt="profile" 
-            />
-          </motion.div>
-          
-          <div className="text-center">
-            <motion.p 
-              variants={item}
-              className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mb-1"
-            >
-              Member Verified
-            </motion.p>
-            <motion.h2 
-              variants={item}
-              className="text-3xl font-bold text-slate-800 dark:text-slate-100"
-            >
-              {user.user_metadata.full_name}
-            </motion.h2 >
-          </div>
+        <div ref={sentinelRef} className="h-8" />
 
-          <motion.div variants={item} className="w-full pt-4">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-4 bg-slate-900 dark:bg-emerald-500 hover:bg-black dark:hover:bg-emerald-600 text-white font-bold rounded-2xl shadow-lg transition-all"
-            >
-              Create New Post
-            </motion.button>
-          </motion.div>
-        </motion.div>
-      ) : (
-        <motion.div variants={item} className="text-center z-10">
-          <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
-            Share your experience with the world.
-          </p>
-          <motion.a 
-            href="/login"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-block px-10 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-full font-bold shadow-xl transition-all"
-          >
-            Join Now
-          </motion.a>
-        </motion.div>
-      )}
-    </motion.main>
+        {loadingMore ? <p className="theme-muted text-center text-sm">Loading more stories…</p> : null}
+        {!hasMore && posts.length > 0 ? (
+          <p className="theme-muted text-center text-xs uppercase tracking-[0.2em]">End of archive</p>
+        ) : null}
+      </main>
+    </div>
   );
 }
