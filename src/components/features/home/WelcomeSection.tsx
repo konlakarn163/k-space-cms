@@ -36,12 +36,12 @@ export default function WelcomeSection({
   return (
     <section className="relative flex flex-col items-center px-4 py-12 text-center md:py-20">
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 left-1/2 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-emerald-500/5 blur-[100px] dark:bg-emerald-500/10" />
+        <div className="absolute top-0 left-1/2 h-75 w-150 -translate-x-1/2 rounded-full bg-emerald-500/5 blur-[100px] dark:bg-emerald-500/10" />
       </div>
 
       <div className="max-w-4xl">
         <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-6xl lg:text-7xl dark:text-white">
-          <span className="bg-gradient-to-r from-[#ef5a3c] via-orange-500 to-[#ef5a3c] bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-[#ef5a3c] via-orange-500 to-[#ef5a3c] bg-clip-text text-transparent">
             K-Space CMS:
           </span>
           <br />

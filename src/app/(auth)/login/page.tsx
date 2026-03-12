@@ -90,7 +90,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 font-sans transition-colors duration-500 dark:bg-[var(--background)]">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 font-sans transition-colors duration-500 dark:bg-background">
       <div className="absolute inset-0 z-0">
         <div className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full bg-emerald-500/10 blur-[120px] dark:bg-emerald-500/5" />
         <div className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-blue-500/10 blur-[120px] dark:bg-blue-500/5" />
@@ -120,7 +120,7 @@ export default function LoginPage() {
             className="text-4xl font-black tracking-tight text-slate-900 dark:text-white"
           >
             K-Space{" "}
-            <span className="bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
               CMS
             </span>
           </motion.h1>
@@ -218,7 +218,7 @@ export default function LoginPage() {
                 darkHoverColor="#fff"
                 darkIconColor="#000"
                 darkIconHoverColor="#000"
-                className="w-full !p-3"
+                className="w-full p-3!"
               >
                 <div className="flex items-center justify-center">
                   <Image
@@ -242,7 +242,7 @@ export default function LoginPage() {
                 iconHoverColor="#fff"
                 darkIconColor="#000"
                 darkIconHoverColor="#000"
-                className="w-full !p-3"
+                className="w-full p-3!"
               >
                 <div className="flex items-center justify-center">
                   <Image

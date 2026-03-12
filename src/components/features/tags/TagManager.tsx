@@ -87,10 +87,10 @@ export default function TagManager({ session }: { session: Session }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="pb-4">
-        <h1 className="font-serif text-4xl font-black tracking-tight text-[var(--foreground)]">
+        <h1 className="font-serif text-4xl font-black tracking-tight text-foreground">
           Tag Management
         </h1>
-        <p className="mt-2 text-sm text-[var(--muted)]">
+        <p className="mt-2 text-sm text-(--muted)">
           Manage tags for your community.
         </p>
       </div>
@@ -118,7 +118,7 @@ export default function TagManager({ session }: { session: Session }) {
           </button>
         </div>
         {error ? (
-          <p className="mt-2 text-xs text-[var(--danger)]">{error}</p>
+          <p className="mt-2 text-xs text-(--danger)">{error}</p>
         ) : null}
       </div>
 
@@ -161,7 +161,7 @@ export default function TagManager({ session }: { session: Session }) {
                     />
                     <button
                       onClick={() => void handleUpdate(tag.id)}
-                      className="text-[var(--success)] hover:opacity-70"
+                      className="text-(--success) hover:opacity-70"
                       title="Save"
                     >
                       <Check className="h-4 w-4" />
@@ -184,14 +184,14 @@ export default function TagManager({ session }: { session: Session }) {
                         setEditingId(tag.id);
                         setEditingName(tag.name);
                       }}
-                      className="theme-muted hover:text-[var(--foreground)] transition-colors"
+                      className="theme-muted hover:text-foreground transition-colors"
                       title="Edit"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => void handleDelete(tag.id)}
-                      className="text-[var(--danger)] opacity-60 hover:opacity-100 transition-opacity"
+                      className="text-(--danger) opacity-60 hover:opacity-100 transition-opacity"
                       title="Delete"
                     >
                       <Trash2 className="h-4 w-4" />

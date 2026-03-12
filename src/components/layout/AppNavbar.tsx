@@ -75,13 +75,13 @@ export default function AppNavbar() {
                   </PopoverTrigger>
                   <PopoverContent
                     align="end"
-                    className="w-64 overflow-hidden rounded-[2rem] border-[var(--border-default)] bg-[var(--surface)] p-2 shadow-2xl backdrop-blur-2xl"
+                    className="w-64 overflow-hidden rounded-4xl border-(--border-default) bg-(--surface) p-2 shadow-2xl backdrop-blur-2xl"
                   >
-                    <div className="px-4 py-3 mb-2 border-b border-[var(--border-default)] opacity-80">
+                    <div className="px-4 py-3 mb-2 border-b border-(--border-default) opacity-80">
                       <p className="text-xs font-black uppercase tracking-widest truncate">
                         {displayName}
                       </p>
-                      <p className="text-[10px] text-[var(--muted)] truncate">
+                      <p className="text-[10px] text-(--muted) truncate">
                         {user.email}
                       </p>
                     </div>
@@ -89,7 +89,7 @@ export default function AppNavbar() {
                     <div className="grid gap-1">
                       <Link
                         href="/profile"
-                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--canvas-subtle)]"
+                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-(--canvas-subtle)"
                       >
                         <User className="h-4 w-4 opacity-70" />
                         <span>My Profile</span>
@@ -97,20 +97,20 @@ export default function AppNavbar() {
 
                       {isSuperAdmin && (
                         <>
-                          <div className="my-1 border-t border-[var(--border-default)] opacity-30" />
-                          <div className="px-3 py-1 text-[10px] font-bold text-[var(--muted)] uppercase tracking-tight">
+                          <div className="my-1 border-t border-(--border-default) opacity-30" />
+                          <div className="px-3 py-1 text-[10px] font-bold text-(--muted) uppercase tracking-tight">
                             Admin Console
                           </div>
                           <Link
                             href="/admin/users"
-                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--canvas-subtle)]"
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-(--canvas-subtle)"
                           >
                             <Users className="h-4 w-4 text-blue-500" />
                             <span>Manage Users</span>
                           </Link>
                           <Link
                             href="/admin/tags"
-                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--canvas-subtle)]"
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-(--canvas-subtle)"
                           >
                             <Tag className="h-4 w-4 text-purple-500" />
                             <span>Manage Tags</span>
@@ -118,11 +118,11 @@ export default function AppNavbar() {
                         </>
                       )}
 
-                      <div className="my-1 border-t border-[var(--border-default)] opacity-50" />
+                      <div className="my-1 border-t border-(--border-default) opacity-50" />
                       <ThemeToggle className="navbar-theme-toggle" />
                       <button
                         onClick={() => void handleSignOut()}
-                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[var(--danger)] transition-colors hover:bg-red-500/10"
+                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-(--danger) transition-colors hover:bg-red-500/10"
                       >
                         <LogOut className="h-4 w-4" />
                         <span>Sign out</span>
