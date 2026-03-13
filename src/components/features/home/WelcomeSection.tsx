@@ -100,7 +100,9 @@ export default function WelcomeSection({
                 >
                   <SlidersHorizontal className="h-4 w-4 text-emerald-500" />
                   <span>Filter: {selectedLabel}</span>
-                  <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+                  />
                 </button>
               </PopoverTrigger>
               <PopoverContent
@@ -142,7 +144,11 @@ export default function WelcomeSection({
                         }`}
                       >
                         <span className="flex items-center gap-2">
-                          <span className={active ? "text-inherit" : "text-emerald-500"}>
+                          <span
+                            className={
+                              active ? "text-inherit" : "text-emerald-500"
+                            }
+                          >
                             {getIcon(tag)}
                           </span>
                           <span>{tag.toUpperCase()}</span>
@@ -161,8 +167,8 @@ export default function WelcomeSection({
               onClick={() => onSelectTag("")}
               className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
                 selectedTag === ""
-                  ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
-                  : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
+                  ? "bg-gray-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
+                  : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-background dark:border-gray-600 dark:text-slate-300 dark:hover:border-slate-600"
               }`}
             >
               <span>·</span> All
@@ -174,8 +180,8 @@ export default function WelcomeSection({
                 onClick={() => onSelectTag(selectedTag === tag ? "" : tag)}
                 className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
                   selectedTag === tag
-                    ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
-                    : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
+                    ? "bg-gray-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
+                    : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-background dark:border-gray-600 dark:text-slate-300 dark:hover:border-slate-600"
                 }`}
               >
                 <span

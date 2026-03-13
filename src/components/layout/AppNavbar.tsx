@@ -139,6 +139,7 @@ export default function AppNavbar() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
+                <ThemeToggle className="rounded-full" />
                 <Link href="/login" className="navbar-cta font-bold">
                   Sign in
                 </Link>
