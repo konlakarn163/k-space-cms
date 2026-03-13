@@ -99,7 +99,6 @@ export default function LoginPage() {
         });
 
         if (error) throw error;
-        toast.success("เข้าสู่ระบบสำเร็จ");
         router.push("/");
       }
     } catch (error) {
