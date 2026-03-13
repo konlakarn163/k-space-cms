@@ -50,32 +50,22 @@ html.dark {
 }
 
 html {
-  scroll-behavior: smooth;
+  @apply scroll-smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  @apply bg-(--background) text-(--foreground);
   font-family: var(--font-sans);
   transition: background-color 300ms ease;
   -webkit-font-smoothing: antialiased;
 }
 
 .navbar {
-  position: sticky;
-  top: 1.25rem;
-  z-index: 50;
-  width: 100%;
+  @apply sticky top-5 z-50 w-full;
 }
 
 .navbar-shell {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  overflow: hidden;
-  @apply rounded-2xl;
+  @apply relative flex items-center justify-between gap-4 overflow-hidden rounded-2xl;
 }
 
 html.dark .navbar-shell {
@@ -95,142 +85,87 @@ html.dark .navbar-shell {
 .navbar-brand,
 .navbar-actions,
 .navbar-menu-wrap {
-  position: relative;
-  z-index: 1;
+  @apply relative z-[1];
 }
 
 .navbar-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
+  @apply inline-flex items-center gap-3;
 }
 
 .navbar-logo-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 9999px;
-  background: linear-gradient(135deg, #ff7b52, #ef5a3c);
-  color: #fff8f2;
+  @apply inline-flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-[#ff7b52] to-[#ef5a3c] text-[#fff8f2];
   box-shadow: 0 10px 24px rgba(239, 90, 60, 0.3);
 }
 
 .navbar-brand-text {
-  font-size: 1.6rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #14303b;
+  @apply text-[1.6rem] font-extrabold tracking-[-0.03em] text-[#14303b];
 }
 
 html.dark .navbar-brand-text {
-  color: #e9eef3;
+  @apply text-[#e9eef3];
 }
 
 .navbar-menu-wrap {
-  flex: 1;
-  justify-content: center;
+  @apply flex-1 justify-center;
 }
 
 .navbar-menu {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.3rem;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  @apply flex items-center rounded-full gap-[0.2rem] border border-[rgba(255,255,255,0.22)] bg-[rgba(255,255,255,0.14)] p-[0.3rem];
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  border-radius: 9999px;
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
 }
 
 html.dark .navbar-menu {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
+  @apply bg-[rgba(255,255,255,0.05)] border-[rgba(255,255,255,0.08)];
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .navbar-menu-item {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.28rem;
-  height: 2.35rem;
-  padding: 0 1rem;
-  border-radius: 9999px;
-  color: rgba(20, 48, 59, 0.88);
-  font-size: 0.9rem;
-  font-weight: 500;
+  @apply inline-flex h-[2.35rem] items-center justify-center rounded-full px-4 gap-[0.28rem] text-[0.9rem] font-medium;
+  @apply text-[rgba(20,48,59,0.88)];
   transition: all 200ms ease;
 }
 
 html.dark .navbar-menu-item {
-  color: rgba(233, 238, 243, 0.85);
+  @apply text-[rgba(233,238,243,0.85)];
 }
 
 .navbar-menu-item:hover {
-  color: var(--foreground);
-  background: rgba(255, 255, 255, 0.2);
+  @apply text-(--foreground) bg-[rgba(255,255,255,0.2)];
 }
 
 .navbar-menu-item.active {
-  color: #151515;
-  background: rgba(255, 255, 255, 0.88);
+  @apply text-[#151515] bg-[rgba(255,255,255,0.88)];
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
 html.dark .navbar-menu-item.active {
-  color: #0f1116;
-  background: rgba(255, 255, 255, 0.92);
+  @apply text-[#0f1116] bg-[rgba(255,255,255,0.92)];
 }
 
 .navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  @apply flex items-center gap-3;
 }
 
 .navbar-theme-toggle {
-  display: inline-flex;
-  min-height: 2.7rem;
-  transition:
-    transform 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease;
+  @apply inline-flex min-h-[2.7rem];
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
 
 .navbar-user {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.3rem 0.45rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  @apply inline-flex items-center rounded-full gap-[0.55rem] px-[0.45rem] py-[0.3rem];
+  @apply bg-[rgba(255,255,255,0.12)] border border-[rgba(255,255,255,0.18)];
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
 .navbar-cta {
-  height: 2.55rem;
-  padding: 0 1.35rem;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background: #111111;
-  color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 700;
+  @apply inline-flex h-[2.55rem] items-center justify-center rounded-full px-[1.35rem] gap-2 text-sm font-bold;
+  @apply bg-[#111111] text-[#ffffff];
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-  transition:
-    transform 150ms ease,
-    opacity 150ms ease,
-    box-shadow 150ms ease;
+  transition: transform 150ms ease, opacity 150ms ease, box-shadow 150ms ease;
 }
 
 .navbar-cta:hover {
@@ -240,52 +175,30 @@ html.dark .navbar-menu-item.active {
 }
 
 .navbar-outline {
-  height: 2.45rem;
-  padding: 0 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--foreground);
-  font-size: 0.875rem;
-  font-weight: 600;
+  @apply inline-flex h-[2.45rem] items-center justify-center rounded-full px-4 gap-[0.45rem] text-sm font-semibold;
+  @apply bg-[rgba(255,255,255,0.12)] border border-[rgba(255,255,255,0.2)] text-(--foreground);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
 @media (max-width: 1023px) {
   .navbar-shell {
-    padding: 0.65rem 0.75rem 0.65rem 0.9rem;
+    @apply py-[0.65rem] pr-[0.75rem] pl-[0.9rem];
   }
 
   .navbar-brand-text {
-    font-size: 1.4rem;
+    @apply text-[1.4rem];
   }
 
   .navbar-actions {
-    gap: 0.45rem;
+    @apply gap-[0.45rem];
   }
 }
 
 .btn-main {
-  height: 2.55rem;
-  padding: 0 1.35rem;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-
-  font-size: 0.875rem;
-  font-weight: 700;
+  @apply inline-flex h-[2.55rem] items-center justify-center rounded-full px-[1.35rem] gap-2 text-sm font-bold;
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-  transition:
-    transform 150ms ease,
-    opacity 150ms ease,
-    box-shadow 150ms ease;
+  transition: transform 150ms ease, opacity 150ms ease, box-shadow 150ms ease;
 }
 
 .btn-main:hover {
@@ -295,46 +208,35 @@ html.dark .navbar-menu-item.active {
 }
 @media (max-width: 639px) {
   .navbar-shell {
-    padding: 0.65rem;
+    @apply p-[0.65rem];
   }
 
   .navbar-tools {
-    padding: 0.16rem 0.2rem;
+    @apply py-[0.16rem] px-[0.2rem];
   }
 
   .navbar-cta {
-    height: 2.35rem;
-    padding: 0 1rem;
-    font-size: 0.8rem;
+    @apply h-[2.35rem] px-4 text-[0.8rem];
   }
 }
 
 .post-card {
+  @apply overflow-hidden;
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
 }
 
 .post-card-img {
-  position: relative;
-  width: 100%;
-  height: 240px;
-  overflow: hidden;
-  background: var(--surface-elevated);
+  @apply relative h-[240px] w-full overflow-hidden;
+  @apply bg-(--surface-elevated);
 }
 
 html.dark .post-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  @apply border-[rgba(255,255,255,0.15)];
 }
 
 .tag-chip {
-  display: inline-flex;
-  align-items: center;
-  background: var(--tag-bg);
-  color: var(--tag-color);
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 9999px;
+  @apply inline-flex items-center rounded-full text-[0.7rem] font-semibold;
+  @apply bg-(--tag-bg) text-(--tag-color) py-1 px-[10px];
   transition: filter 150ms ease;
 }
 
@@ -343,35 +245,31 @@ html.dark .post-card:hover {
 }
 
 .font-serif {
-  font-family: var(--font-serif);
+  @apply font-serif;
 }
 
 .theme-card {
-  background: var(--surface);
-  border-color: var(--border-default);
-  color: var(--foreground);
+  @apply bg-(--surface) border-(--border-default) text-(--foreground);
 }
 
 .theme-elevated {
-  background: var(--surface-elevated);
+  @apply bg-(--surface-elevated);
 }
 
 .theme-surface {
-  background: var(--surface);
-  color: var(--foreground);
+  @apply bg-(--surface) text-(--foreground);
 }
 
 .theme-muted {
-  color: var(--muted);
+  @apply text-(--muted);
 }
 
 .theme-border {
-  border-color: var(--border-default);
+  @apply border-(--border-default);
 }
 
 .theme-canvas {
-  background: var(--background);
-  color: var(--foreground);
+  @apply bg-(--background) text-(--foreground);
 }
 
 ::selection {
@@ -379,44 +277,38 @@ html.dark .post-card:hover {
 }
 
 button:disabled {
-  cursor: not-allowed;
+  @apply cursor-not-allowed;
 }
 
 button {
+  @apply cursor-pointer;
   transition: all 200ms ease;
-  cursor: pointer;
 }
 
 .theme-prose a,
 .ProseMirror a {
-  color: rgb(37 99 235);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  @apply text-blue-600 underline underline-offset-2;
 }
 
 .theme-prose ul,
 .ProseMirror ul {
-  list-style: disc;
-  margin: 0.75rem 0;
-  padding-left: 1.5rem;
+  @apply list-disc my-3 pl-6;
 }
 
 .theme-prose ol,
 .ProseMirror ol {
-  list-style: decimal;
-  margin: 0.75rem 0;
-  padding-left: 1.5rem;
+  @apply list-decimal my-3 pl-6;
 }
 
 .theme-prose li,
 .ProseMirror li {
-  margin: 0.25rem 0;
+  @apply my-1;
 }
 
 .ProseMirror {
-  min-height: 13rem;
+  @apply min-h-52;
 }
 
 .ProseMirror:focus {
-  outline: none;
+  @apply outline-none;
 }

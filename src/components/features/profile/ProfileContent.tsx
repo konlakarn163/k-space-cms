@@ -6,7 +6,6 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase/client';
 import { fetchMyProfile, updateMyProfile, changeMyPassword } from '@/services/profileService';
 import { uploadImage } from '@/services/storageService';
-import { encryptPassword } from '@/lib/cryptoUtils';
 import { getAvatarUrl } from '@/lib/postUtils';
 import type { Profile } from '@/lib/types';
 import { KeyRound, Pencil, UserRound } from 'lucide-react';
@@ -89,7 +88,7 @@ export default function ProfileContent({ user }: { user: User }) {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) throw new Error('Not authenticated');
-      const result = await changeMyPassword(sessionData.session, encryptPassword(newPassword));
+      const result = await changeMyPassword(sessionData.session, newPassword);
       setPasswordMsg({ type: 'success', text: result.message });
       setNewPassword('');
       setConfirmPassword('');
