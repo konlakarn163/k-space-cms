@@ -82,7 +82,7 @@ export default function PostComments({
           return (
             <article key={comment.id} className="theme-card rounded-md border p-5">
               <div className="flex items-start justify-between gap-3">
-                <div>
+                <div className='flex-1'>
                   <p className="text-sm font-semibold">{comment.profiles?.username ?? 'member'}</p>
                   {isEditing ? (
                     <div className="mt-3 flex flex-col gap-3 sm:flex-row">
