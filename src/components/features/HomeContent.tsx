@@ -101,7 +101,7 @@ export default function HomeContent({ user: _user }: HomeContentProps) {
 
   return (
     <div className="theme-canvas min-h-screen">
-      <main className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <main className="mx-auto flex max-w-7xl flex-col gap-4 lg:gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <WelcomeSection
           loading={loadingPosts && posts.length === 0}
           tags={masterTags.map((t) => t.name)}

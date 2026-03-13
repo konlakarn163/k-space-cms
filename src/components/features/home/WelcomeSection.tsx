@@ -1,5 +1,13 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 type WelcomeSectionProps = {
   loading?: boolean;
   tags: string[];
@@ -33,6 +41,17 @@ export default function WelcomeSection({
   selectedTag,
   onSelectTag,
 }: WelcomeSectionProps) {
+  const [open, setOpen] = useState(false);
+  const selectedLabel = useMemo(
+    () => (selectedTag ? selectedTag.toUpperCase() : "ALL"),
+    [selectedTag],
+  );
+
+  const handleSelectTag = (tag: string) => {
+    onSelectTag(tag);
+    setOpen(false);
+  };
+
   return (
     <section className="relative flex flex-col items-center px-4 py-12 text-center md:py-20">
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -71,40 +90,106 @@ export default function WelcomeSection({
           ))}
         </div>
       ) : (
-        <div className="flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={() => onSelectTag("")}
-            className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
-              selectedTag === ""
-                ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
-                : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
-            }`}
-          >
-            <span>·</span> All
-          </button>
-          {tags.map((tag) => (
+        <>
+          <div className="flex w-full justify-end lg:hidden">
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 shadow-sm transition-all hover:border-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600"
+                >
+                  <SlidersHorizontal className="h-4 w-4 text-emerald-500" />
+                  <span>Filter: {selectedLabel}</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="center"
+                className="w-[min(92vw,24rem)] rounded-3xl p-3"
+              >
+                <div className="mb-2 px-2 text-left">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                    Filter tags
+                  </p>
+                </div>
+                <div className="grid gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTag("")}
+                    className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
+                      selectedTag === ""
+                        ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950"
+                        : "bg-slate-50 text-slate-700 hover:bg-slate-100 dark:bg-slate-950/60 dark:text-slate-300 dark:hover:bg-slate-800"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span>·</span>
+                      <span>All</span>
+                    </span>
+                  </button>
+                  {tags.map((tag) => {
+                    const active = selectedTag === tag;
+
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => handleSelectTag(active ? "" : tag)}
+                        className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
+                          active
+                            ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950"
+                            : "bg-slate-50 text-slate-700 hover:bg-slate-100 dark:bg-slate-950/60 dark:text-slate-300 dark:hover:bg-slate-800"
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className={active ? "text-inherit" : "text-emerald-500"}>
+                            {getIcon(tag)}
+                          </span>
+                          <span>{tag.toUpperCase()}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="hidden flex-wrap justify-center gap-3 lg:flex">
             <button
-              key={tag}
               type="button"
-              onClick={() => onSelectTag(selectedTag === tag ? "" : tag)}
+              onClick={() => onSelectTag("")}
               className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
-                selectedTag === tag
+                selectedTag === ""
                   ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
                   : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
               }`}
             >
-              <span
-                className={
-                  selectedTag === tag ? "text-inherit" : "text-emerald-500"
-                }
-              >
-                {getIcon(tag)}
-              </span>
-              {tag.toUpperCase()}
+              <span>·</span> All
             </button>
-          ))}
-        </div>
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => onSelectTag(selectedTag === tag ? "" : tag)}
+                className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                  selectedTag === tag
+                    ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
+                    : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
+                }`}
+              >
+                <span
+                  className={
+                    selectedTag === tag ? "text-inherit" : "text-emerald-500"
+                  }
+                >
+                  {getIcon(tag)}
+                </span>
+                {tag.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </>
       )}
     </section>
   );
