@@ -49,7 +49,7 @@ export default function WelcomeSection({
             Community for Builders, Thinkers and Creators.
           </span>
         </h1>
-        <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-slate-500 md:text-lg dark:text-slate-400">
+        <p className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-slate-700 md:text-lg dark:text-slate-300">
           A community-driven CMS on{" "}
           <span className="text-slate-900 dark:text-slate-200 font-medium">
             Next.js, Supabase and Express.
@@ -78,7 +78,7 @@ export default function WelcomeSection({
             className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
               selectedTag === ""
                 ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
-                : "bg-white text-slate-500 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-600"
+                : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
             }`}
           >
             <span>·</span> All
@@ -91,7 +91,7 @@ export default function WelcomeSection({
               className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
                 selectedTag === tag
                   ? "bg-slate-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
-                  : "bg-white text-slate-500 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400 dark:hover:border-slate-600"
+                  : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-600"
               }`}
             >
               <span
