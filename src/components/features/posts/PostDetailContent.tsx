@@ -154,16 +154,15 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
 
   const handleEditComment = async (commentId: string, body: string) => {
     if (!session) return;
-    const nextBody = window.prompt('Edit comment', body);
-    if (!nextBody) return;
 
     const snapshot = comments;
-    setComments((prev) => prev.map((comment) => (comment.id === commentId ? { ...comment, body: nextBody } : comment)));
+    setComments((prev) => prev.map((comment) => (comment.id === commentId ? { ...comment, body } : comment)));
 
     try {
-      await updateComment({ session, commentId, body: nextBody });
+      await updateComment({ session, commentId, body });
     } catch {
       setComments(snapshot);
+      throw new Error('Cannot update comment');
     }
   };
 

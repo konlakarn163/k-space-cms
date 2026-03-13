@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import type { User } from '@supabase/supabase-js';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Check, Pencil, Trash2, X } from 'lucide-react';
 import type { Comment } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 
@@ -14,7 +15,7 @@ type PostCommentsProps = {
   user: User | null;
   onCommentChange: (value: string) => void;
   onDeleteComment: (commentId: string) => void;
-  onEditComment: (commentId: string, body: string) => void;
+  onEditComment: (commentId: string, body: string) => Promise<void>;
   onSubmitComment: () => void;
 };
 
@@ -30,6 +31,33 @@ export default function PostComments({
   onEditComment,
   onSubmitComment,
 }: PostCommentsProps) {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingBody, setEditingBody] = useState('');
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  const startEdit = (comment: Comment) => {
+    setEditingId(comment.id);
+    setEditingBody(comment.body);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingBody('');
+  };
+
+  const submitEdit = async (commentId: string) => {
+    const nextBody = editingBody.trim();
+    if (!nextBody || savingEdit) return;
+
+    setSavingEdit(true);
+    try {
+      await onEditComment(commentId, nextBody);
+      cancelEdit();
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   return (
     <section className="space-y-5">
       <div>
@@ -49,18 +77,53 @@ export default function PostComments({
         {rootComments.map((comment) => {
           const isMine = comment.user_id === myId;
           const replies = comments.filter((item) => item.parent_id === comment.id);
+          const isEditing = editingId === comment.id;
 
           return (
             <article key={comment.id} className="theme-card rounded-md border p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold">{comment.profiles?.username ?? 'member'}</p>
-                  <p className="theme-muted mt-2 text-sm leading-7">{comment.body}</p>
+                  {isEditing ? (
+                    <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+                      <Input
+                        value={editingBody}
+                        onChange={(event) => setEditingBody(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter' && !event.shiftKey) {
+                            event.preventDefault();
+                            void submitEdit(comment.id);
+                          }
+
+                          if (event.key === 'Escape') {
+                            cancelEdit();
+                          }
+                        }}
+                        className="h-11 flex-1 rounded-full px-4 text-sm"
+                        autoFocus
+                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => void submitEdit(comment.id)}
+                          disabled={savingEdit || !editingBody.trim()}
+                          className="theme-secondary-button rounded-full p-2"
+                        >
+                          <Check className="h-4 w-4" />
+                        </button>
+                        <button type="button" onClick={cancelEdit} className="theme-secondary-button rounded-full p-2">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="theme-muted mt-2 text-sm leading-7">{comment.body}</p>
+                  )}
                 </div>
 
                 {isMine ? (
                   <div className="flex gap-2">
-                    <button type="button" onClick={() => onEditComment(comment.id, comment.body)} className="theme-secondary-button rounded-full p-2">
+                    <button type="button" onClick={() => startEdit(comment)} className="theme-secondary-button rounded-full p-2" disabled={isEditing}>
                       <Pencil className="h-4 w-4" />
                     </button>
                     <button type="button" onClick={() => onDeleteComment(comment.id)} className="theme-secondary-button theme-danger rounded-full p-2">
