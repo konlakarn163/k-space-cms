@@ -18,6 +18,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const authCallbackUrl = `${(process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "")}/auth/callback`;
 
   const handleLogin = async (provider: "google" | "github") => {
     setLoading(true);
@@ -25,7 +26,7 @@ export default function LoginPage() {
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: authCallbackUrl,
       },
     });
   };
@@ -50,7 +51,7 @@ export default function LoginPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            emailRedirectTo: authCallbackUrl,
           },
         });
 
