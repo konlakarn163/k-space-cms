@@ -18,6 +18,11 @@ export const env = {
   port: Number(process.env.API_PORT ?? 10000),
   frontendUrl: process.env.FRONTEND_URL,
   corsOrigin: process.env.CORS_ORIGIN ?? process.env.FRONTEND_URL,
+  corsOrigins: (process.env.CORS_ORIGIN ?? process.env.FRONTEND_URL ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+    .map((origin) => origin.replace(/\/$/, '')),
   supabaseUrl: process.env.SUPABASE_URL,
   supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
