@@ -7,9 +7,11 @@ import { supabase } from '@/utils/supabase/client';
 import { fetchMyProfile, updateMyProfile, changeMyPassword } from '@/services/profileService';
 import { uploadImage } from '@/services/storageService';
 import { getAvatarUrl } from '@/lib/postUtils';
+import { passwordSchema } from '@/lib/validators/auth';
 import type { Profile } from '@/lib/types';
 import { KeyRound, Pencil, UserRound } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { toast } from 'react-toastify';
 
 export default function ProfileContent({ user }: { user: User }) {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -35,8 +37,8 @@ export default function ProfileContent({ user }: { user: User }) {
         const p = await fetchMyProfile(sessionData.session);
         setProfile(p);
         setUsername(p.username);
-      } catch {
-        // ignore
+      } catch(error) {
+        console.error('Failed to load profile:', error);
       }
     };
     void load();
@@ -67,8 +69,11 @@ export default function ProfileContent({ user }: { user: User }) {
       });
       setProfile(updated);
       setProfileMsg({ type: 'success', text: 'Profile updated successfully.' });
+      toast.success('Profile updated successfully.');
     } catch (e) {
-      setProfileMsg({ type: 'error', text: e instanceof Error ? e.message : 'Failed to update profile.' });
+      const message = e instanceof Error ? e.message : 'Failed to update profile.';
+      setProfileMsg({ type: 'error', text: message });
+      toast.error(message);
     } finally {
       setLoadingProfile(false);
     }
@@ -76,12 +81,16 @@ export default function ProfileContent({ user }: { user: User }) {
 
   const handleChangePassword = async () => {
     setPasswordMsg(null);
-    if (newPassword !== confirmPassword) {
-      setPasswordMsg({ type: 'error', text: 'Passwords do not match.' });
+    const parsedPassword = passwordSchema.safeParse(newPassword);
+    if (!parsedPassword.success) {
+      const message = parsedPassword.error.issues[0]?.message ?? 'Invalid password.';
+      setPasswordMsg({ type: 'error', text: message });
+      toast.error(message);
       return;
     }
-    if (newPassword.length < 6) {
-      setPasswordMsg({ type: 'error', text: 'Password must be at least 6 characters.' });
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg({ type: 'error', text: 'Passwords do not match.' });
+      toast.error('Passwords do not match.');
       return;
     }
     setLoadingPassword(true);
@@ -90,10 +99,13 @@ export default function ProfileContent({ user }: { user: User }) {
       if (!sessionData.session) throw new Error('Not authenticated');
       const result = await changeMyPassword(sessionData.session, newPassword);
       setPasswordMsg({ type: 'success', text: result.message });
+      toast.success(result.message);
       setNewPassword('');
       setConfirmPassword('');
     } catch (e) {
-      setPasswordMsg({ type: 'error', text: e instanceof Error ? e.message : 'Failed to change password.' });
+      const message = e instanceof Error ? e.message : 'Failed to change password.';
+      setPasswordMsg({ type: 'error', text: message });
+      toast.error(message);
     } finally {
       setLoadingPassword(false);
     }
@@ -194,7 +206,7 @@ export default function ProfileContent({ user }: { user: User }) {
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder="At least 8 chars, 1 uppercase, 1 number"
                 />
               </div>
               <div className="space-y-1.5">

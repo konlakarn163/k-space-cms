@@ -9,37 +9,71 @@ import { buildApiUrl } from "@/lib/api";
 import Image from "next/image";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
+import { signupSchema } from "@/lib/validators/auth";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [oauthProviderLoading, setOauthProviderLoading] = useState<"google" | "github" | null>(null);
   const router = useRouter();
-  const authCallbackUrl = `${(process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "")}/auth/callback`;
+
+  const validateSignupInput = (emailValue: string, passwordValue: string) => {
+    const parsed = signupSchema.safeParse({
+      email: emailValue,
+      password: passwordValue,
+    });
+
+    if (!parsed.success) {
+      throw new Error(parsed.error.issues[0]?.message ?? "ข้อมูลสมัครสมาชิกไม่ถูกต้อง");
+    }
+  };
+
+  const getAuthCallbackUrl = () => {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
+      ?? (typeof window !== "undefined" ? window.location.origin : "");
+
+    return `${baseUrl.replace(/\/$/, "")}/auth/callback`;
+  };
 
   const handleLogin = async (provider: "google" | "github") => {
-    setLoading(true);
-    setErrorMessage(null);
-    await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: authCallbackUrl,
-      },
-    });
+    try {
+      setLoading(true);
+      setOauthProviderLoading(provider);
+      const authCallbackUrl = getAuthCallbackUrl();
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: authCallbackUrl,
+        },
+      });
+
+      if (error) throw error;
+      toast.info(`กำลังพาไป ${provider}...`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "ไม่สามารถเข้าสู่ระบบด้วย OAuth ได้");
+      setLoading(false);
+      setOauthProviderLoading(null);
+    }
   };
 
   const handleEmailAuth = async () => {
     try {
       setLoading(true);
-      setMessage(null);
-      setErrorMessage(null);
+
+      const normalizedEmail = email.trim();
 
       if (mode === "signup") {
+        validateSignupInput(normalizedEmail, password);
+
+        const authCallbackUrl = getAuthCallbackUrl();
+
         const checkResponse = await fetch(
-          buildApiUrl("/api/auth/check-email", { email }),
+          buildApiUrl("/api/auth/check-email", { email: normalizedEmail }),
         );
         const checkJson = (await checkResponse.json()) as { exists: boolean };
 
@@ -48,7 +82,7 @@ export default function LoginPage() {
         }
 
         const { error } = await supabase.auth.signUp({
-          email,
+          email: normalizedEmail,
           password,
           options: {
             emailRedirectTo: authCallbackUrl,
@@ -56,22 +90,25 @@ export default function LoginPage() {
         });
 
         if (error) throw error;
-        setMessage("สมัครสมาชิกสำเร็จ กรุณาเช็คอีเมลเพื่อยืนยันบัญชี");
+        toast.success("สมัครสมาชิกสำเร็จ กรุณาเช็คอีเมลเพื่อยืนยันบัญชี");
+        router.push(`/check-email?email=${encodeURIComponent(normalizedEmail)}`);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
-          email,
+          email: normalizedEmail,
           password,
         });
 
         if (error) throw error;
+        toast.success("เข้าสู่ระบบสำเร็จ");
         router.push("/");
       }
     } catch (error) {
-      setErrorMessage(
+      toast.error(
         error instanceof Error ? error.message : "ไม่สามารถดำเนินการได้",
       );
     } finally {
       setLoading(false);
+      setOauthProviderLoading(null);
     }
   };
 
@@ -107,20 +144,12 @@ export default function LoginPage() {
         className="relative z-10 mx-4 w-full max-w-md overflow-hidden rounded-[2.5rem] border border-white/40 bg-white/70 p-8 shadow-2xl  transition-colors dark:border-slate-800/50 dark:bg-neutral-900/60 "
       >
         <div className="mb-10 text-center">
-          {/* <motion.div
-            variants={itemVars}
-            className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-xl dark:bg-slate-800"
-          >
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-emerald-400 p-[2px]">
-              <div className="h-full w-full rounded-[14px] bg-white dark:bg-slate-800" />
-            </div>
-          </motion.div> */}
           <motion.h1
             variants={itemVars}
             className="text-4xl font-black tracking-tight text-slate-900 dark:text-white"
           >
             K-Space{" "}
-            <span className="bg-linear-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#ef5a3c] via-orange-500 to-[#ef5a3c] bg-clip-text text-transparent">
               CMS
             </span>
           </motion.h1>
@@ -189,17 +218,6 @@ export default function LoginPage() {
             </button>
           </motion.div>
 
-          {message && (
-            <p className="rounded-xl bg-emerald-500/10 p-3 text-center text-xs font-medium text-emerald-600 dark:text-emerald-400">
-              {message}
-            </p>
-          )}
-          {errorMessage && (
-            <p className="rounded-xl bg-red-500/10 p-3 text-center text-xs font-medium text-red-600 dark:text-red-400">
-              {errorMessage}
-            </p>
-          )}
-
           <div className="flex items-center gap-4 py-2">
             <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
@@ -221,12 +239,16 @@ export default function LoginPage() {
                 className="w-full p-3!"
               >
                 <div className="flex items-center justify-center">
-                  <Image
-                    src="https://www.svgrepo.com/show/475656/google-color.svg"
-                    width={18}
-                    height={18}
-                    alt="google"
-                  />
+                  {oauthProviderLoading === "google" ? (
+                    <Loader2 className="h-[18px] w-[18px] animate-spin" />
+                  ) : (
+                    <Image
+                      src="https://www.svgrepo.com/show/475656/google-color.svg"
+                      width={18}
+                      height={18}
+                      alt="google"
+                    />
+                  )}
                 </div>
               </OriginButton>
             </motion.div>
@@ -245,13 +267,17 @@ export default function LoginPage() {
                 className="w-full p-3!"
               >
                 <div className="flex items-center justify-center">
-                  <Image
-                    src="https://www.svgrepo.com/show/512317/github-142.svg"
-                    width={18}
-                    height={18}
-                    className="invert"
-                    alt="github"
-                  />
+                  {oauthProviderLoading === "github" ? (
+                    <Loader2 className="h-[18px] w-[18px] animate-spin" />
+                  ) : (
+                    <Image
+                      src="https://www.svgrepo.com/show/512317/github-142.svg"
+                      width={18}
+                      height={18}
+                      className="invert"
+                      alt="github"
+                    />
+                  )}
                 </div>
               </OriginButton>
             </motion.div>

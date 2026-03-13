@@ -23,7 +23,7 @@ export function getAvatarUrl(user: User | Session['user'] | null | undefined) {
   return (
     user?.user_metadata?.avatar_url ??
     user?.user_metadata?.picture ??
-    'https://avatars.githubusercontent.com/u/9919?v=4'
+    '/user-icon.svg'
   );
 }
 

@@ -14,6 +14,8 @@ type HomeHeaderProps = {
 };
 
 export default function HomeHeader({ user, onSignOut, onWriteClick }: HomeHeaderProps) {
+  const avatarUrl = getAvatarUrl(user);
+
   return (
     <header className="navbar">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -31,7 +33,7 @@ export default function HomeHeader({ user, onSignOut, onWriteClick }: HomeHeader
             <>
               <div className="hidden items-center gap-3 rounded-full border px-3 py-1.5 theme-surface theme-border sm:flex">
                 <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                  <Image src={getAvatarUrl(user)} alt="avatar" fill className="object-cover" sizes="32px" />
+                  <Image src={avatarUrl} alt="avatar" fill className="object-cover" sizes="32px" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">{user.user_metadata?.full_name ?? user.email?.split('@')[0]}</p>

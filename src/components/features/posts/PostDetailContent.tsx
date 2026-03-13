@@ -41,6 +41,7 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
   const [loadingComments, setLoadingComments] = useState(true);
   const [commentInput, setCommentInput] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [imageSrc, setImageSrc] = useState(initialPost.image_url ?? '/no-image.svg');
   const myId = user?.id;
 
   useEffect(() => {
@@ -57,6 +58,10 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
 
     return () => data.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    setImageSrc(post.image_url ?? '/no-image.svg');
+  }, [post.image_url]);
 
   useEffect(() => {
     const load = async () => {
@@ -232,11 +237,16 @@ export default function PostDetailContent({ initialPost, user }: PostDetailConte
             </div>
           </div>
 
-          {post.image_url ? (
-            <div className="relative aspect-video overflow-hidden rounded-4xl">
-              <Image src={post.image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 1200px) 100vw, 1200px" />
-            </div>
-          ) : null}
+          <div className="relative aspect-video overflow-hidden rounded-4xl">
+            <Image
+              src={imageSrc}
+              alt={post.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1200px) 100vw, 1200px"
+              onError={() => setImageSrc('/no-image.svg')}
+            />
+          </div>
 
           <div className="theme-border flex flex-wrap items-center gap-3 border-y py-4">
             <button type="button" onClick={() => void handleVote('up')} disabled={!user} className={`theme-secondary-button inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ${myVote === 'up' ? 'text-green-600' : ''}`}>

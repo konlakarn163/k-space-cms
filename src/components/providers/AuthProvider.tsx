@@ -32,6 +32,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             if (session) {
                 await apiFetch('/api/profile/sync', { method: 'POST' }, session).catch(() => null);
                 const profile = await fetchMyProfile(session).catch(() => null);
+                console.log('profile',profile);
+                
                 setRole(profile?.role ?? null);
             } else {
                 setRole(null);

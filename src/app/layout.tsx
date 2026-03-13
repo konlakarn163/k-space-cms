@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import ThemeProvider from "@/components/providers/ThemeProvider";
 import ScrollToTopProvider from "@/components/providers/ScrollToTopProvider";
+import ToastProvider from "@/components/providers/ToastProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,6 +36,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ScrollToTopProvider />
+            <ToastProvider />
             {children}
           </AuthProvider>
         </ThemeProvider>

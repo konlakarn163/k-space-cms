@@ -41,6 +41,7 @@ export default function AppNavbar() {
 
   const displayName =
     user?.user_metadata?.full_name ?? user?.email?.split("@")[0];
+  const avatarUrl = getAvatarUrl(user);
 
   return (
     <nav className="navbar px-4 sm:px-6 lg:px-8">
@@ -70,7 +71,7 @@ export default function AppNavbar() {
                   <PopoverTrigger asChild>
                     <button className="relative h-11 w-11 overflow-hidden rounded-full border-2 border-white/20 transition-all hover:border-white/50 focus:outline-none">
                       <Image
-                        src={getAvatarUrl(user)}
+                        src={avatarUrl}
                         alt="avatar"
                         fill
                         className="object-cover"

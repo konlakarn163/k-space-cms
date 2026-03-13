@@ -19,6 +19,10 @@ import { createPost, updatePost } from "@/services/postService";
 import { uploadImage } from "@/services/storageService";
 import { fetchTags, type MasterTag } from "@/services/tagService";
 import { supabase } from "@/utils/supabase/client";
+import { postFormSchema } from "@/lib/validators/postForm";
+import { toast } from "react-toastify";
+
+type FormErrors = Partial<Record<"title" | "content" | "tags" | "imageFile", string>>;
 
 type WritePostContentProps = {
   user: User;
@@ -46,6 +50,7 @@ export default function WritePostContent({
   );
   const [isPublishing, setIsPublishing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
@@ -88,6 +93,7 @@ export default function WritePostContent({
   const previewTags = useMemo(() => selectedTags, [selectedTags]);
 
   const toggleTag = (tag: string) => {
+    setFormErrors((prev) => ({ ...prev, tags: undefined }));
     setSelectedTags((prev) => {
       if (prev.includes(tag)) {
         return prev.filter((item) => item !== tag);
@@ -105,10 +111,36 @@ export default function WritePostContent({
   };
 
   const handlePublish = async () => {
-    if (!session || !title.trim() || !content.trim()) return;
+    if (!session) return;
+
+    const validated = postFormSchema.safeParse({
+      title,
+      content,
+      tags: selectedTags,
+      imageFile,
+    });
+
+    if (!validated.success) {
+      const fieldErrors = validated.error.flatten().fieldErrors;
+      setFormErrors({
+        title: fieldErrors.title?.[0],
+        content: fieldErrors.content?.[0],
+        tags: fieldErrors.tags?.[0],
+        imageFile: fieldErrors.imageFile?.[0],
+      });
+      toast.error(
+        fieldErrors.title?.[0]
+          ?? fieldErrors.content?.[0]
+          ?? fieldErrors.tags?.[0]
+          ?? fieldErrors.imageFile?.[0]
+          ?? "ข้อมูลโพสต์ไม่ถูกต้อง",
+      );
+      return;
+    }
 
     setIsPublishing(true);
     setErrorMessage(null);
+    setFormErrors({});
 
     try {
       const imageUrl = imageFile
@@ -125,6 +157,7 @@ export default function WritePostContent({
           tags: selectedTags,
         });
 
+        toast.success("อัปเดตโพสต์สำเร็จ");
         router.push(`/posts/${initialPost.id}`);
         router.refresh();
         return;
@@ -138,12 +171,13 @@ export default function WritePostContent({
         tags: selectedTags,
       });
 
+      toast.success("สร้างโพสต์สำเร็จ");
       router.push(`/posts/${createdPost.id}`);
       router.refresh();
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Cannot publish post",
-      );
+      const message = error instanceof Error ? error.message : "Cannot publish post";
+      setErrorMessage(message);
+      toast.error(message);
     } finally {
       setIsPublishing(false);
     }
@@ -218,15 +252,21 @@ export default function WritePostContent({
             <div className="mt-8 space-y-5">
               <Input
                 value={title}
-                onChange={(event) => setTitle(event.target.value)}
+                onChange={(event) => {
+                  setTitle(event.target.value);
+                  setFormErrors((prev) => ({ ...prev, title: undefined }));
+                }}
                 placeholder="Article title"
                 className="h-auto w-full rounded-[1.25rem] px-5 py-4 text-lg font-semibold"
               />
+              {formErrors.title ? (
+                <p className="text-sm text-red-500">{formErrors.title}</p>
+              ) : null}
 
               <div className="space-y-3">
                 <div>
                   <p className="theme-muted text-xs uppercase tracking-[0.2em]">
-                    Tags from master
+                    Tags
                   </p>
                 </div>
 
@@ -262,6 +302,9 @@ export default function WritePostContent({
                     )}
                   </div>
                 )}
+                {formErrors.tags ? (
+                  <p className="text-sm text-red-500">{formErrors.tags}</p>
+                ) : null}
               </div>
 
               <div className="space-y-3">
@@ -281,6 +324,7 @@ export default function WritePostContent({
                     onChange={(event) => {
                       const file = event.target.files?.[0] ?? null;
                       setImageFile(file);
+                      setFormErrors((prev) => ({ ...prev, imageFile: undefined }));
                       setCoverPreviewUrl(
                         file
                           ? URL.createObjectURL(file)
@@ -289,6 +333,9 @@ export default function WritePostContent({
                     }}
                   />
                 </label>
+                {formErrors.imageFile ? (
+                  <p className="text-sm text-red-500">{formErrors.imageFile}</p>
+                ) : null}
 
                 {coverPreviewUrl ? (
                   <div className="relative aspect-video overflow-hidden rounded-[1.25rem]">
@@ -299,6 +346,7 @@ export default function WritePostContent({
                       className="object-cover"
                       sizes="(max-width: 1280px) 100vw, 50vw"
                       unoptimized
+                      onError={() => setCoverPreviewUrl('/no-image.svg')}
                     />
                     <button
                       type="button"
@@ -316,10 +364,16 @@ export default function WritePostContent({
 
               <RichTextEditor
                 value={content}
-                onChange={setContent}
+                onChange={(value) => {
+                  setContent(value);
+                  setFormErrors((prev) => ({ ...prev, content: undefined }));
+                }}
                 placeholder="Write your article here..."
                 onImageUpload={handleInlineImageUpload}
               />
+              {formErrors.content ? (
+                <p className="text-sm text-red-500">{formErrors.content}</p>
+              ) : null}
 
               {errorMessage ? (
                 <p className="text-sm text-red-500">{errorMessage}</p>

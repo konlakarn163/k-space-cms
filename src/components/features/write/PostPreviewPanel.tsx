@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 type PostPreviewPanelProps = {
@@ -13,6 +16,14 @@ export default function PostPreviewPanel({
   tags,
   title,
 }: PostPreviewPanelProps) {
+  const [previewImageSrc, setPreviewImageSrc] = useState(
+    coverPreviewUrl ?? "/no-image.svg",
+  );
+
+  useEffect(() => {
+    setPreviewImageSrc(coverPreviewUrl ?? "/no-image.svg");
+  }, [coverPreviewUrl]);
+
   return (
     <aside className="theme-card rounded-4xl border p-5 sm:p-6">
       <p className="theme-muted text-xs uppercase tracking-[0.24em]">
@@ -20,20 +31,15 @@ export default function PostPreviewPanel({
       </p>
       <div className="mt-4 overflow-hidden rounded-2xl group flex h-full flex-col gap-4 theme-surface">
         <div className="post-card-img group rounded-2xl overflow-hidden">
-          {coverPreviewUrl ? (
-            <Image
-              src={coverPreviewUrl}
-              alt="cover preview"
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300 "
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
-              unoptimized
-            />
-          ) : (
-            <div className="theme-muted flex h-full items-center justify-center font-serif text-5xl">
-              {title.trim().charAt(0) || "P"}
-            </div>
-          )}
+          <Image
+            src={previewImageSrc}
+            alt="cover preview"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300 "
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+            unoptimized
+            onError={() => setPreviewImageSrc("/no-image.svg")}
+          />
 
           {tags.length > 0 && (
             <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
