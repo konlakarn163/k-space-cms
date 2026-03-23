@@ -2,6 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { FaBitcoin, FaBriefcase, FaNewspaper, FaPalette, FaRobot, FaRocket, FaServer } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi2";
+import { RiNextjsFill } from "react-icons/ri";
+import { SiSupabase } from "react-icons/si";
+import { TbCpu, TbTrendingUp } from "react-icons/tb";
+import type { IconType } from "react-icons";
 import {
   Popover,
   PopoverContent,
@@ -16,23 +22,23 @@ type WelcomeSectionProps = {
   onSelectTag: (tag: string) => void;
 };
 
-const TAG_ICONS: Record<string, string> = {
-  ai: "✦",
-  business: "💼",
-  crypto: "◎",
-  digital: "❖",
-  news: "✺",
-  startups: "🚀",
-  technology: "⊞",
-  trends: "🔥",
-  nextjs: "▲",
-  supabase: "⚡",
-  backend: "⚙",
-  design: "◈",
+const TAG_ICONS: Record<string, IconType> = {
+  ai: FaRobot,
+  business: FaBriefcase,
+  crypto: FaBitcoin,
+  digital: HiSparkles,
+  news: FaNewspaper,
+  startups: FaRocket,
+  technology: TbCpu,
+  trends: TbTrendingUp,
+  nextjs: RiNextjsFill,
+  supabase: SiSupabase,
+  backend: FaServer,
+  design: FaPalette,
 };
 
 function getIcon(tag: string) {
-  return TAG_ICONS[tag.toLowerCase()] ?? "·";
+  return TAG_ICONS[tag.toLowerCase()] ?? HiSparkles;
 }
 
 export default function WelcomeSection({
@@ -125,12 +131,18 @@ export default function WelcomeSection({
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <span>·</span>
+                      <HiSparkles
+                        className={
+                          selectedTag === "" ? "text-inherit" : "text-emerald-500"
+                        }
+                        aria-hidden="true"
+                      />
                       <span>All</span>
                     </span>
                   </button>
                   {tags.map((tag) => {
                     const active = selectedTag === tag;
+                    const TagIcon = getIcon(tag);
 
                     return (
                       <button
@@ -144,13 +156,10 @@ export default function WelcomeSection({
                         }`}
                       >
                         <span className="flex items-center gap-2">
-                          <span
-                            className={
-                              active ? "text-inherit" : "text-emerald-500"
-                            }
-                          >
-                            {getIcon(tag)}
-                          </span>
+                          <TagIcon
+                            className={active ? "text-inherit" : "text-emerald-500"}
+                            aria-hidden="true"
+                          />
                           <span>{tag.toUpperCase()}</span>
                         </span>
                       </button>
@@ -171,29 +180,37 @@ export default function WelcomeSection({
                   : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-background dark:border-gray-600 dark:text-slate-300 dark:hover:border-slate-600"
               }`}
             >
-              <span>·</span> All
+              <HiSparkles
+                className={
+                  selectedTag === "" ? "text-inherit" : "text-emerald-500"
+                }
+                aria-hidden="true"
+              />
+              All
             </button>
-            {tags.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => onSelectTag(selectedTag === tag ? "" : tag)}
-                className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
-                  selectedTag === tag
-                    ? "bg-gray-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
-                    : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-background dark:border-gray-600 dark:text-slate-300 dark:hover:border-slate-600"
-                }`}
-              >
-                <span
-                  className={
-                    selectedTag === tag ? "text-inherit" : "text-emerald-500"
-                  }
+            {tags.map((tag) => {
+              const active = selectedTag === tag;
+              const TagIcon = getIcon(tag);
+
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => onSelectTag(active ? "" : tag)}
+                  className={`group flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                    active
+                      ? "bg-gray-900 text-white shadow-lg dark:bg-emerald-500 dark:text-slate-950"
+                      : "bg-white text-slate-700 border border-slate-200 hover:border-slate-400 dark:bg-background dark:border-gray-600 dark:text-slate-300 dark:hover:border-slate-600"
+                  }`}
                 >
-                  {getIcon(tag)}
-                </span>
-                {tag.toUpperCase()}
-              </button>
-            ))}
+                  <TagIcon
+                    className={active ? "text-inherit" : "text-emerald-500"}
+                    aria-hidden="true"
+                  />
+                  {tag.toUpperCase()}
+                </button>
+              );
+            })}
           </div>
         </>
       )}
