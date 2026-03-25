@@ -2,6 +2,8 @@
 
 Modern community CMS built with Next.js + Supabase + Node.js Express API.
 
+DEMO https://k-space-cms.konlakarn.space/
+
 ## Features
 
 - Authentication: Email/Password + Google + GitHub OAuth via Supabase
