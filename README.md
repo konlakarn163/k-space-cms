@@ -2,6 +2,7 @@
 
 Modern community CMS built with Next.js + Supabase + Node.js Express API.
 
+The API may experience latency due to the use of an online database, which might involve sleep intervals while waiting for processes to complete.
 DEMO https://k-space-cms.konlakarn.space/
 
 ## Features
