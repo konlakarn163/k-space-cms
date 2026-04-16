@@ -49,3 +49,6 @@ app.use('/api/admin', adminRoutes);
 app.get('/api/me', requireAuth, (req: Request & { user?: unknown }, res: Response) => {
   res.json({ user: req.user });
 });
+
+
+export default app;
